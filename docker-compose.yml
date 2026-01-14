@@ -5,10 +5,10 @@ services:
     image: mariadb:10.11
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD: Flexxus2023**
-      - MYSQL_DATABASE: testlink
-      - MYSQL_USER: testlink
-      - MYSQL_PASSWORD: Flexxus2023**
+      - MYSQL_ROOT_PASSWORD=Flexxus2023**
+      - MYSQL_DATABASE=testlink
+      - MYSQL_USER=testlink
+      - MYSQL_PASSWORD=Flexxus2023**
     volumes:
       - testlink-db-data:/var/lib/mysql
     ports:
@@ -43,26 +43,23 @@ services:
         - "traefik.http.routers.${SERVICE_NAME}-https.tls.certresolver=myresolver"
         - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=6005"    
     environment:
-      # Configuración de base de datos
-      - TESTLINK_DATABASE_HOST: testlink-db
-      - TESTLINK_DATABASE_PORT_NUMBER: 3306
-      - TESTLINK_DATABASE_NAME: testlink
-      - TESTLINK_DATABASE_USER: testlink
-      - TESTLINK_DATABASE_PASSWORD: Flexxus2023**
 
-      # Configuración de TestLink
-      - TESTLINK_USERNAME: admin
-      - TESTLINK_PASSWORD: admin123
-      - TESTLINK_EMAIL: admin@testlink.local
+      - TESTLINK_DATABASE_HOST=testlink-db
+      - TESTLINK_DATABASE_PORT_NUMBER=3306
+      - TESTLINK_DATABASE_NAME=testlink
+      - TESTLINK_DATABASE_USER=testlink
+      - TESTLINK_DATABASE_PASSWORD=Flexxus2023**
 
-      # Configuración adicional
-      - ALLOW_EMPTY_PASSWORD: "no"
+      - TESTLINK_USERNAME=admin
+      - TESTLINK_PASSWORD=admin123
+      - TESTLINK_EMAIL=admin@testlink.local
 
-      # PHP settings (opcional)
-      - PHP_MEMORY_LIMIT: 512M
-      - PHP_MAX_EXECUTION_TIME: 300
-      - PHP_UPLOAD_MAX_FILESIZE: 20M
-      - PHP_POST_MAX_SIZE: 20M
+      - ALLOW_EMPTY_PASSWORD="no"
+
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_MAX_EXECUTION_TIME=300
+      - PHP_UPLOAD_MAX_FILESIZE=20M
+      - PHP_POST_MAX_SIZE=20M
     volumes:
       - testlink-data:/bitnami/testlink
       - testlink-uploads:/opt/bitnami/testlink/upload_area
