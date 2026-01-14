@@ -52,7 +52,7 @@ services:
       options:
         loki-url: ${LOKI_URL}   
   testlink:
-    image: fengzhou/testlink:1.9.20
+    image: testlink/testlink:latest
     restart: unless-stopped
     ports:
       - "6005:8080"
