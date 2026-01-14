@@ -45,8 +45,8 @@ services:
         - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=6005"    
     environment:
 
-      - TESTLINK_DATABASE_HOST=testlink-db
-      - TESTLINK_DATABASE_PORT_NUMBER=3306
+      - TESTLINK_DATABASE_HOST=10.250.0.68
+      - TESTLINK_DATABASE_PORT_NUMBER=6006
       - TESTLINK_DATABASE_NAME=testlink
       - TESTLINK_DATABASE_USER=testlink
       - TESTLINK_DATABASE_PASSWORD=Flexxus2023**
