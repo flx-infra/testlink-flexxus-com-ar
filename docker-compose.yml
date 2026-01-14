@@ -165,6 +165,8 @@ volumes:
     driver: local
   testlink-uploads:
     driver: local
+  testlink-logs:
+    driver: local  
 
 networks:
   traefik:
