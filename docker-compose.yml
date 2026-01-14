@@ -37,7 +37,8 @@ services:
       - MYSQL_USER=testlink
       - MYSQL_PASSWORD=Flexxus2023**
     volumes:
-      - testlink-db-data:/var/lib/mysql
+      - testlink-logs:/var/testlink/logs
+      - testlink-uploads:/var/testlink/upload_area
     ports:
       - "6006:3306"  
     networks:
@@ -102,7 +103,7 @@ services:
 volumes:
   testlink-db-data:
     driver: local
-  testlink-data:
+  testlink-logs:
     driver: local
   testlink-uploads:
     driver: local
