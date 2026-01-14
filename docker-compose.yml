@@ -25,7 +25,92 @@ services:
       options:
         loki-url: ${LOKI_URL}   
   testlink:
-    image: public.ecr.aws/bitnami/testlink:latest
+    version: '3.6'
+
+services:
+  testlink-db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=Flexxus2023**
+      - MYSQL_DATABASE=testlink
+      - MYSQL_USER=testlink
+      - MYSQL_PASSWORD=Flexxus2023**
+    volumes:
+      - testlink-db-data:/var/lib/mysql
+    ports:
+      - "6006:3306"  
+    networks:
+      - traefik     
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: loki
+      options:
+        loki-url: ${LOKI_URL}   
+  testlink:
+    image: fengzhou/testlink:1.9.20
+    restart: unless-stopped
+    ports:
+      - "6005:8080"
+    deploy:      
+      placement:
+        constraints: ["${NODE}"] 
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.${SERVICE_NAME}.entrypoints=web"
+        - "traefik.http.routers.${SERVICE_NAME}.rule=Host(`${DOMAIN_NAME}`)"
+        - "traefik.http.middlewares.${SERVICE_NAME}-http.redirectscheme.scheme=https"
+        - "traefik.http.routers.${SERVICE_NAME}-https.rule=Host(`${DOMAIN_NAME}`)"
+        - "traefik.http.routers.${SERVICE_NAME}-https.entrypoints=https"
+        - "traefik.http.routers.${SERVICE_NAME}-https.tls=true"
+        - "traefik.http.routers.${SERVICE_NAME}-https.tls.certresolver=myresolver"
+        - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=6005"    
+    environment:
+
+      - TESTLINK_DATABASE_HOST=testlink-db
+      - TESTLINK_DATABASE_PORT_NUMBER=3306
+      - TESTLINK_DATABASE_NAME=testlink
+      - TESTLINK_DATABASE_USER=testlink
+      - TESTLINK_DATABASE_PASSWORD=Flexxus2023**
+
+      - TESTLINK_USERNAME=admin
+      - TESTLINK_PASSWORD=admin123
+      - TESTLINK_EMAIL=admin@testlink.local
+
+      - ALLOW_EMPTY_PASSWORD="no"
+
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_MAX_EXECUTION_TIME=300
+      - PHP_UPLOAD_MAX_FILESIZE=20M
+      - PHP_POST_MAX_SIZE=20M
+    volumes:
+      - testlink-data:/bitnami/testlink
+      - testlink-uploads:/opt/bitnami/testlink/upload_area
+    networks:
+      - traefik     
+    depends_on:
+      - testlink-db
+    logging:
+      driver: loki
+      options:
+        loki-url: ${LOKI_URL}     
+
+volumes:
+  testlink-db-data:
+    driver: local
+  testlink-data:
+    driver: local
+  testlink-uploads:
+    driver: local
+
+networks:
+  traefik:
+    external:
+      name: traefik-network
     restart: unless-stopped
     ports:
       - "6005:8080"
