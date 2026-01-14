@@ -63,6 +63,7 @@ volumes:
   testlink-uploads:
     driver: local
 
-traefik:
+networks:
+  traefik:
     external:
       name: traefik-network
