@@ -12,6 +12,8 @@ services:
       MYSQL_PASSWORD: Flexxus2023**
     volumes:
       - testlink-db-data:/var/lib/mysql
+    ports:
+      - "6006:3306"  
     networks:
       - traefik     
     healthcheck:
@@ -24,8 +26,7 @@ services:
     image: bitnami/testlink:1.9.20
     restart: unless-stopped
     ports:
-      - "8080:8080"
-      - "8443:8443"
+      - "6005:8080"
     environment:
       # Configuración de base de datos
       TESTLINK_DATABASE_HOST: testlink-db
