@@ -52,7 +52,7 @@ services:
       options:
         loki-url: ${LOKI_URL}   
   testlink:
-    image: testlink/testlink:latest
+    image: corfr/testlink:latest
     restart: unless-stopped
     ports:
       - "6005:8080"
