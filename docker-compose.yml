@@ -40,7 +40,7 @@ services:
       TESTLINK_EMAIL: admin@testlink.local
 
       # Configuración adicional
-      ALLOW_EMPTY_PASSWORD: no
+      ALLOW_EMPTY_PASSWORD: "no"
 
       # PHP settings (opcional)
       PHP_MEMORY_LIMIT: 512M
