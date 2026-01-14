@@ -53,8 +53,7 @@ services:
     networks:
       - traefik     
     depends_on:
-      testlink-db:
-        condition: service_healthy
+      - testlink-db
 
 volumes:
   testlink-db-data:
