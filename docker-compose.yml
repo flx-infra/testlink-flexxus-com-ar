@@ -29,7 +29,7 @@ services:
     image: chusiang/testlink:latest
     restart: unless-stopped
     ports:
-      - "6005:8080"
+      - "6005:80"
     deploy:      
       placement:
         constraints: ["${NODE}"] 
