@@ -10,8 +10,10 @@ services:
       - MYSQL_USER=testlink
       - MYSQL_PASSWORD=Flexxus2023**
     volumes:
-    volumes:
       - testlink-db-data:/var/lib/mysql
+    deploy:
+      placement:
+        constraints: ["${NODE}"] 
     ports:
       - "6006:3306"  
     networks:
