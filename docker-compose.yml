@@ -64,8 +64,8 @@ services:
       - PHP_UPLOAD_MAX_FILESIZE=20M
       - PHP_POST_MAX_SIZE=20M
     volumes:
-      - testlink-data:/bitnami/testlink
-      - testlink-uploads:/opt/bitnami/testlink/upload_area
+      - testlink-data:/var/www/html
+      - testlink-uploads:/var/www/html/upload_area
     networks:
       - traefik     
     depends_on:
