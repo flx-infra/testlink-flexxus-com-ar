@@ -28,7 +28,7 @@ services:
       options:
         loki-url: ${LOKI_URL}   
   testlink:
-    image: chusiang/testlink:latest
+    image: bitnami/testlink:latest
     restart: unless-stopped
     ports:
       - "6005:80"
@@ -46,26 +46,16 @@ services:
         - "traefik.http.routers.${SERVICE_NAME}-https.tls.certresolver=myresolver"
         - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=80"    
     environment:
-
       - TESTLINK_DATABASE_HOST=10.250.0.68
       - TESTLINK_DATABASE_PORT_NUMBER=6006
       - TESTLINK_DATABASE_NAME=testlink
       - TESTLINK_DATABASE_USER=testlink
       - TESTLINK_DATABASE_PASSWORD=Flexxus2023**
-
       - TESTLINK_USERNAME=admin
       - TESTLINK_PASSWORD=admin123
       - TESTLINK_EMAIL=admin@testlink.local
-
-      - ALLOW_EMPTY_PASSWORD="no"
-
-      - PHP_MEMORY_LIMIT=512M
-      - PHP_MAX_EXECUTION_TIME=300
-      - PHP_UPLOAD_MAX_FILESIZE=20M
-      - PHP_POST_MAX_SIZE=20M
     volumes:
-      - testlink-data:/var/www/html
-      - testlink-uploads:/var/www/html/upload_area
+      - testlink-data:/bitnami/testlink      
     networks:
       - traefik     
     depends_on:
