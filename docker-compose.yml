@@ -1,40 +1,54 @@
-version: '3.6'
+version: "3.8"
 
 services:
-  testlink-db:
+  kiwi-db:
     image: mariadb:10.11
-    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     environment:
-      - MYSQL_ROOT_PASSWORD=Flexxus2023**
-      - MYSQL_DATABASE=testlink
-      - MYSQL_USER=testlink
-      - MYSQL_PASSWORD=Flexxus2023**
+      MYSQL_ROOT_PASSWORD: Flexxus2023**
+      MYSQL_DATABASE: kiwi
+      MYSQL_USER: flexxus
+      MYSQL_PASSWORD: Flexxus2023**
     volumes:
-      - testlink-db-data:/var/lib/mysql
-    deploy:
-      placement:
-        constraints: ["${NODE}"] 
+      - kiwi-db-data:/var/lib/mysql
+    networks:
+      - traefik
     ports:
       - "6006:3306"  
-    networks:
-      - traefik     
+    deploy:
+      placement:
+        constraints:
+          - ${NODE}
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 10s
+      interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
     logging:
       driver: loki
       options:
-        loki-url: ${LOKI_URL}   
-  testlink:
-    image: chusiang/testlink:latest
-    restart: unless-stopped
-    ports:
-      - "6005:80"
-    deploy:      
+        loki-url: ${LOKI_URL}
+
+  kiwi:
+    image: pub.kiwitcms.eu/kiwitcms/kiwi:latest
+    environment:
+      KIWI_DB_HOST: 10.250.0.68
+      KIWI_DB_PORT: 6006
+      KIWI_DB_NAME: kiwi
+      KIWI_DB_USER: flexxus
+      KIWI_DB_PASSWORD: Flexxus2023**
+    volumes:
+      - kiwi-uploads:/Kiwi/uploads
+    networks:
+      - traefik
+    depends_on:
+      - kiwi-db
+    deploy:
       placement:
-        constraints: ["${NODE}"] 
+        constraints:
+          - ${NODE}
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.${SERVICE_NAME}.entrypoints=web"
@@ -44,38 +58,19 @@ services:
         - "traefik.http.routers.${SERVICE_NAME}-https.entrypoints=https"
         - "traefik.http.routers.${SERVICE_NAME}-https.tls=true"
         - "traefik.http.routers.${SERVICE_NAME}-https.tls.certresolver=myresolver"
-        - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=80"    
-    environment:
-      - TESTLINK_DATABASE_HOST=10.250.0.68
-      - TESTLINK_DATABASE_PORT_NUMBER=6006
-      - TESTLINK_DATABASE_NAME=testlink
-      - TESTLINK_DATABASE_USER=testlink
-      - TESTLINK_DATABASE_PASSWORD=Flexxus2023**
-      - TESTLINK_USERNAME=admin
-      - TESTLINK_PASSWORD=admin123
-      - TESTLINK_EMAIL=admin@testlink.local
-    volumes:
-      - testlink-uploads:/var/www/html/upload_area
-    networks:
-      - traefik     
-    depends_on:
-      - testlink-db
+        - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=8443"
     logging:
       driver: loki
       options:
-        loki-url: ${LOKI_URL}     
+        loki-url: ${LOKI_URL}
 
 volumes:
-  testlink-db-data:
-    name: "${SERVICE_NAME}_testlink-db-data"
-  testlink-logs:
-    name: "${SERVICE_NAME}_testlink-logs"
-  testlink-uploads:
-    name: "${SERVICE_NAME}_testlink-uploads"
-  testlink-data:
-    name: "${SERVICE_NAME}_testlink-data"
+  kiwi-db-data:
+    driver: local
+  kiwi-uploads:
+    driver: local
 
 networks:
   traefik:
-    external:
-      name: traefik-network
+    external: true
+    name: traefik-network
