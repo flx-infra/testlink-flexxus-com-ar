@@ -62,7 +62,12 @@ services:
         - "traefik.http.routers.${SERVICE_NAME}-https.entrypoints=https"
         - "traefik.http.routers.${SERVICE_NAME}-https.tls=true"
         - "traefik.http.routers.${SERVICE_NAME}-https.tls.certresolver=myresolver"
-        - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=8080"
+
+        - "traefik.http.middlewares.${SERVICE_NAME}-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+        - "traefik.http.middlewares.${SERVICE_NAME}-headers.headers.customrequestheaders.X-Forwarded-Port=443"
+        - "traefik.http.routers.${SERVICE_NAME}-https.middlewares=${SERVICE_NAME}-headers"
+        
+        - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=8443"
         - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.scheme=https"
         - "traefik.http.serversTransports.${SERVICE_NAME}-transport.insecureSkipVerify=true"
         - "traefik.http.services.${SERVICE_NAME}.loadbalancer.serverstransport=${SERVICE_NAME}-transport@docker"
