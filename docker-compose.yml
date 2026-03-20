@@ -77,13 +77,13 @@ services:
 
 volumes:
   testlink-db-data:
-    driver: local
+    name: "${SERVICE_NAME}_testlink-db-data"
   testlink-logs:
-    driver: local
+    name: "${SERVICE_NAME}_testlink-logs"
   testlink-uploads:
-    driver: local
+    name: "${SERVICE_NAME}_testlink-uploads"
   testlink-data:
-    driver: local
+    name: "${SERVICE_NAME}_testlink-data"
 
 networks:
   traefik:
