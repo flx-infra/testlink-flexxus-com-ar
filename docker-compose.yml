@@ -28,7 +28,7 @@ services:
       options:
         loki-url: ${LOKI_URL}   
   testlink:
-    image: bitnami/testlink:latest
+    image: - chusiang/testlink:latest
     restart: unless-stopped
     ports:
       - "6005:80"
@@ -55,7 +55,7 @@ services:
       - TESTLINK_PASSWORD=admin123
       - TESTLINK_EMAIL=admin@testlink.local
     volumes:
-      - testlink-data:/bitnami/testlink      
+      - testlink-uploads:/var/www/html/upload_area
     networks:
       - traefik     
     depends_on:
